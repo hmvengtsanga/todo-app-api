@@ -7,11 +7,26 @@
         "php": ">=8.1",
         "ext-ctype": "*",
         "ext-iconv": "*",
+        "api-platform/core": "^3.1",
+        "doctrine/annotations": "^2.0",
+        "doctrine/doctrine-bundle": "^2.10",
+        "doctrine/doctrine-migrations-bundle": "^3.2",
+        "doctrine/orm": "^2.16",
+        "nelmio/cors-bundle": "^2.3",
+        "stof/doctrine-extensions-bundle": "^1.8",
+        "symfony/asset": "6.3.*",
         "symfony/console": "6.3.*",
         "symfony/dotenv": "6.3.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "6.3.*",
+        "symfony/http-client": "6.3.*",
+        "symfony/messenger": "6.3.*",
+        "symfony/monolog-bundle": "^3.8",
         "symfony/runtime": "^6.3",
+        "symfony/security-bundle": "6.3.*",
+        "symfony/serializer": "6.3.*",
+        "symfony/string": "6.3.*",
+        "symfony/validator": "6.3.*",
         "symfony/yaml": "6.3.*"
     },
     "config": {
@@ -51,6 +66,18 @@
         ],
         "post-update-cmd": [
             "@auto-scripts"
+        ],
+        "init-app": [
+            "php bin/console d:d:d --if-exists --force",
+            "php bin/console d:d:c",
+            "php bin/console d:m:m --no-interaction",
+            "php bin/console d:f:l --no-interaction",
+            "php bin/console api:openapi:export --output=swagger_docs.json",
+            "php bin/console c:c"
+        ],
+        "code-quality": [
+            "vendor/bin/php-cs-fixer fix src",
+            "php bin/phpunit"
         ]
     },
     "conflict": {
@@ -61,5 +88,16 @@
             "allow-contrib": false,
             "require": "6.3.*"
         }
+    },
+    "require-dev": {
+        "doctrine/doctrine-fixtures-bundle": "^3.4",
+        "fakerphp/faker": "^1.23",
+        "friendsofphp/php-cs-fixer": "*",
+        "phpunit/phpunit": "^9.5",
+        "symfony/browser-kit": "6.3.*",
+        "symfony/maker-bundle": "^1.50",
+        "symfony/phpunit-bridge": "^6.3",
+        "symfony/var-dumper": "6.3.*",
+        "symfony/web-profiler-bundle": "6.3.*"
     }
 }

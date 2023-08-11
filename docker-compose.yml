@@ -2,20 +2,20 @@ version: "3.8"
 services:
 
     db:
-        image: mysql
+        image: mysql:latest
         container_name: todo_app_db
-        restart: always
         volumes:
             - db-data:/var/lib/mysql
         environment:
             MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
         networks:
             - dev
+            # dev:
+            #     ipv4_address: 10.5.0.5
 
     phpmyadmin:
         image: phpmyadmin
         container_name: todo_app_phpmyadmin
-        restart: always
         depends_on:
             - db
         ports:
@@ -24,6 +24,8 @@ services:
             PMA_HOST: db
         networks:
             - dev
+            # dev:
+            #     ipv4_address: 10.5.0.6
 
     maildev:
         image: maildev/maildev
@@ -31,7 +33,6 @@ services:
         command: bin/maildev --web 80 --smtp 25 --hide-extensions STARTTLS
         ports:
           - "8041:80"
-        restart: always
         networks:
             - dev
 
@@ -43,12 +44,26 @@ services:
         volumes:
             - ./.docker/vhosts:/etc/apache2/sites-enabled
             - ./:/var/www
-        restart: always
+            - ./.docker/init.sh:/var/www/init.sh
+        restart: unless-stopped
+        depends_on:
+            - db
+            - phpmyadmin
+            - maildev
+        links:
+            - db
         networks:
             - dev
+            # dev:
+            #     ipv4_address: 10.5.0.8
 
 networks:
     dev:
+        # driver: bridge
+        # ipam:
+        #     config:
+        #        - subnet: 10.5.0.0/16
+        #          gateway: 10.5.0.1
 
 volumes:
     db-data:
