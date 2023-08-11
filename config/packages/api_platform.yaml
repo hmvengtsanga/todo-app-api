@@ -1,0 +1,48 @@
+api_platform:
+    title: 'Todo App'
+    description: 'Todo App API'
+    version: '0.0.0'
+
+    mapping:
+        paths: ['%kernel.project_dir%/src/Entity']
+
+    swagger:
+        # The active versions of OpenAPI to be exported or used in the swagger_ui. The first value is the default.
+        versions: [3]
+        # The swagger API keys.
+        api_keys:
+            apiKey:
+                name: Authorization
+                type: header
+
+    # The list of enabled formats. The first one will be the default.
+    formats:
+        jsonld:
+            mime_types: ['application/ld+json']
+        json:
+            mime_types: ['application/json']
+        html:
+            mime_types: ['text/html']
+
+    # The list of enabled patch formats. The first one will be the default.
+    patch_formats: 
+        json:     ['application/merge-patch+json']
+
+    defaults:
+        pagination_client_enabled: true
+        pagination_client_per_page: 20
+        pagination_client_items_per_page: true
+        collection:
+            pagination:
+                items_per_page_parameter: itemsPerPage
+                enabled_parameter_name: pagination
+    
+    # The list of exceptions mapped to their HTTP status code.
+    exception_to_status:
+        # With a status code.
+        Symfony\Component\HttpKernel\Exception\NotFoundHttpException: 404
+        Symfony\Component\Serializer\Exception\ExceptionInterface: 400
+        # Or with a constant defined in the 'Symfony\Component\HttpFoundation\Response' class.
+        ApiPlatform\Exception\InvalidArgumentException: !php/const Symfony\Component\HttpFoundation\Response::HTTP_BAD_REQUEST
+        ApiPlatform\Exception\FilterValidationException: 400
+        Doctrine\ORM\OptimisticLockException: 409
