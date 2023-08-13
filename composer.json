@@ -12,6 +12,8 @@
         "doctrine/doctrine-bundle": "^2.10",
         "doctrine/doctrine-migrations-bundle": "^3.2",
         "doctrine/orm": "^2.16",
+        "gesdinet/jwt-refresh-token-bundle": "^1.1",
+        "lexik/jwt-authentication-bundle": "^2.19",
         "nelmio/cors-bundle": "^2.3",
         "stof/doctrine-extensions-bundle": "^1.8",
         "symfony/asset": "6.3.*",
@@ -73,6 +75,8 @@
             "php bin/console d:m:m --no-interaction",
             "php bin/console d:f:l --no-interaction",
             "php bin/console api:openapi:export --output=swagger_docs.json",
+            "rm -f config/jwt/*",
+            "php bin/console lexik:jwt:generate-keypair",
             "php bin/console c:c"
         ],
         "code-quality": [
