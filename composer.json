@@ -69,11 +69,21 @@
         "post-update-cmd": [
             "@auto-scripts"
         ],
-        "init-app": [
+        "init-db": [
             "php bin/console d:d:d --if-exists --force",
             "php bin/console d:d:c",
             "php bin/console d:m:m --no-interaction",
             "php bin/console d:f:l --no-interaction",
+            "php bin/console c:c"
+        ],
+        "init-db-test": [
+            "php bin/console d:d:d --if-exists --force --env=test",
+            "php bin/console d:d:c --env=test",
+            "php bin/console d:m:m --no-interaction --env=test",
+            "php bin/console d:f:l --no-interaction --env=test",
+            "php bin/console c:c"
+        ],
+        "config-app": [
             "php bin/console api:openapi:export --output=swagger_docs.json",
             "rm -f config/jwt/*",
             "php bin/console lexik:jwt:generate-keypair",

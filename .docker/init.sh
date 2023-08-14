@@ -2,7 +2,9 @@
 
 echo "Init App.."
 
-composer init-app
+composer init-db
+composer init-db-test
+composer config-app
 # apache2-foreground
 
 exec $@
