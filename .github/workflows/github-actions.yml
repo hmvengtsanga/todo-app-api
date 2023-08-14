@@ -39,7 +39,7 @@ jobs:
     - name: Init App test
       env:
         DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
-      run: composer init-app-testss
+      run: composer init-app-test
     - name: Execute tests
       env:
         DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
