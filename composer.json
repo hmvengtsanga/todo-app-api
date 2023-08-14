@@ -87,7 +87,6 @@
             "php bin/console c:c --env=test"
         ],
         "init-app-test": [
-            // "php bin/console d:d:d --if-exists --force --env=test",
             "php bin/console d:d:c --env=test",
             "php bin/console d:m:m --no-interaction --env=test",
             "php bin/console d:f:l --no-interaction --env=test",
