@@ -12,35 +12,66 @@ permissions:
 jobs:
   app-tests:
     runs-on: ubuntu-latest
+
+    # Docs: https://docs.github.com/en/actions/using-containerized-services
+    services:
+      mysql:
+        image: mysql:latest
+        env:
+          MYSQL_ALLOW_EMPTY_PASSWORD: 'yes'
+          # MYSQL_ROOT_PASSWORD: symfony
+          MYSQL_DATABASE: todo_bd
+        ports:
+          - 3306/tcp
+        options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
+
     steps:
-    #  To automatically get bug fixes and new Php versions for shivammathur/setup-php,
-    # change this to (see https://github.com/shivammathur/setup-php#bookmark-versioning):
-    # uses: shivammathur/setup-php@v2
-    - uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
-      with:
-        php-version: '8.1'
-    - uses: actions/checkout@v3
-    - name: Copy .env.test.local
-      run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
-    - name: Cache Composer packages
-      id: composer-cache
-      uses: actions/cache@v3
-      with:
-        path: vendor
-        key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
-        restore-keys: |
-          ${{ runner.os }}-php-
-    - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
-    - name: Create Database
-      run: |
-        mkdir -p data
-        touch data/database.sqlite
-    - name: Init App test
-      env:
-        DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
-      run: composer init-app-test
-    - name: Execute tests
-      env:
-        DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
-      run: vendor/bin/phpunit
+      #  To automatically get bug fixes and new Php versions for shivammathur/setup-php,
+      # change this to (see https://github.com/shivammathur/setup-php#bookmark-versioning):
+      # uses: shivammathur/setup-php@v2
+      - uses: shivammathur/setup-php@2cb9b829437ee246e9b3cac53555a39208ca6d28
+        with:
+          php-version: '8.1'
+
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Copy .env.test.local
+        run: php -r "file_exists('.env.test.local') || copy('.env.test', '.env.test.local');"
+
+      - name: Cache Composer packages
+        id: composer-cache
+        uses: actions/cache@v3
+        with:
+          path: vendor
+          key: ${{ runner.os }}-php-${{ hashFiles('**/composer.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-php-
+
+      - name: Install Dependencies
+        run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+
+      # - name: Create Database
+      #   run: |
+      #     mkdir -p data
+      #     touch data/database.sqlite
+
+      # - name: Run Migration
+      #   run: |
+      #     composer require --dev symfony/orm-pack
+      #     php bin/console doctrine:schema:update --force || echo "No migrations found or schema update failed"
+      #     php bin/console doctrine:migrations:migrate || echo "No migrations found or migration failed"
+      #   env:
+      #     DATABASE_URL: mysql://root:symfony@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/symfony
+
+      - name: Init App test
+        env:
+          DATABASE_URL: mysql://root:@127.0.0.1:${{ job.services.mysql.ports['3306'] }}/todo_bd
+        run: |
+           composer require --dev symfony/orm-pack
+           composer init-app-test
+
+      - name: Run tests
+        env:
+          DATABASE_URL: sqlite:///%kernel.project_dir%/data/database.sqlite
+        run: vendor/bin/phpunit
