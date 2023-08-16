@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Tests\Authentication;
+namespace App\Tests\Api\Authentication;
 
 use ApiPlatform\Symfony\Bundle\Test\ApiTestCase;
 use ApiPlatform\Symfony\Bundle\Test\Client;
@@ -28,16 +28,36 @@ final class AuthTest extends ApiTestCase
         $this->assertNotNull($arrayResponse['token']);
     }
 
-    public function testGetTokenFailed(): void
+    /**
+     * @dataProvider invalidGetTokenProvider
+     */
+    public function testGetTokenFailed(array $parameters, int $expectedStatus): void
     {
         $this->getClient()->request('POST', '/api/authentication', [
             'headers' => ['Content-Type' => 'application/json'],
-            'json' => [
-                'email' => "j.developer@test.com",
-                'password' => "0000",
-            ],
+            'json' => $parameters
         ]);
 
-        $this->assertResponseStatusCodeSame(401);
+        $this->assertResponseStatusCodeSame($expectedStatus);
+    }
+
+    public function invalidGetTokenProvider(): array
+    {
+        return [
+            'Incorrect email' => [
+                [
+                    'email' => "j.developer@test.com",
+                    'password' => "0000",
+                ],
+                401,
+            ],
+            'Incorrect password' => [
+                [
+                    'email' => "joe.developer@test.com",
+                    'password' => "0001",
+                ],
+                401,
+            ],
+        ];
     }
 }

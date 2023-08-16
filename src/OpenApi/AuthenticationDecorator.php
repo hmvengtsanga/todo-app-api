@@ -39,7 +39,7 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
                 'firstname' => [
                     'type' => 'string',
                     'readOnly' => true,
-                ]
+                ],
             ],
         ]);
         $schemas['Credentials'] = new \ArrayObject([
@@ -68,7 +68,7 @@ final class AuthenticationDecorator implements OpenApiFactoryInterface
             ],
         ]);
 
-        $pathItemAuthenticationToken = new Model\PathItem( 
+        $pathItemAuthenticationToken = new Model\PathItem(
             ref: 'JWT Token',
             post: new Model\Operation(
                 operationId: 'postCredentialsItem',
