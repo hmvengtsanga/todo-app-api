@@ -18,16 +18,20 @@
         "stof/doctrine-extensions-bundle": "^1.8",
         "symfony/asset": "6.3.*",
         "symfony/console": "6.3.*",
+        "symfony/doctrine-messenger": "6.3.*",
         "symfony/dotenv": "6.3.*",
+        "symfony/expression-language": "6.3.*",
         "symfony/flex": "^2",
         "symfony/framework-bundle": "6.3.*",
         "symfony/http-client": "6.3.*",
+        "symfony/mailer": "6.3.*",
         "symfony/messenger": "6.3.*",
         "symfony/monolog-bundle": "^3.8",
         "symfony/runtime": "^6.3",
         "symfony/security-bundle": "6.3.*",
         "symfony/serializer": "6.3.*",
         "symfony/string": "6.3.*",
+        "symfony/twig-bundle": "6.3.*",
         "symfony/validator": "6.3.*",
         "symfony/yaml": "6.3.*"
     },
@@ -86,8 +90,10 @@
         "config-app": [
             "php bin/console api:openapi:export --output=swagger_docs.json",
             "rm -f config/jwt/*",
-            "php bin/console lexik:jwt:generate-keypair",
-            "php bin/console c:c"
+            "php bin/console lexik:jwt:generate-keypair"
+        ],
+        "exec-tasks": [
+            "php bin/console messenger:consume async"
         ],
         "code-quality": [
             "vendor/bin/php-cs-fixer fix src",
@@ -104,6 +110,7 @@
         }
     },
     "require-dev": {
+        "dama/doctrine-test-bundle": "^7.2",
         "doctrine/doctrine-fixtures-bundle": "^3.4",
         "fakerphp/faker": "^1.23",
         "friendsofphp/php-cs-fixer": "*",

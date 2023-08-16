@@ -3,6 +3,11 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
 use App\Repository\UserRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
@@ -21,6 +26,15 @@ use Symfony\Component\Validator\Constraints as Assert;
     normalizationContext: ['groups' => ['user:read']],
     denormalizationContext: ['groups' => ['user:write']],
 )]
+#[Get(security: "is_granted('USER_READ', object)")]
+#[Put(security: "is_granted('USER_UPDATE', object)")]
+#[Delete(security: "is_granted('USER_DELETE', object)")]
+#[GetCollection(
+    security: "is_granted('ROLE_ADMIN')",
+    securityMessage: 'Only admins can see all users.'
+)
+]
+#[Post]
 class User implements UserInterface, PasswordAuthenticatedUserInterface
 {
     // updates createdAt, updatedAt fields
