@@ -2,8 +2,11 @@
 
 namespace App\Repository;
 
+use ApiPlatform\Doctrine\Orm\Paginator;
 use App\Entity\Todo;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\Tools\Pagination\Paginator as PaginatorTools;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
@@ -30,5 +33,30 @@ class TodoRepository extends ServiceEntityRepository
         if ($flush) {
             $this->getEntityManager()->flush();
         }
+    }
+
+    public function getPublicTodosPaginator(int $page, int $itemPerPage, array $order): Paginator
+    {
+        $qb = $this->createQueryBuilder('t')
+                    ->where('t.public = :isPublic')
+                    ->setParameter('isPublic', true);
+
+        if (count($order) > 0) {
+            $firstKey = array_key_first($order);
+            $qb->orderBy(
+                $firstKey,
+                $order[$firstKey]
+            );
+        }
+
+        $criteria = Criteria::create()
+                    ->setFirstResult(($page - 1) * $itemPerPage)
+                    ->setMaxResults($itemPerPage);
+
+        $qb->addCriteria($criteria);
+
+        $doctrinePaginator = new PaginatorTools($qb);
+
+        return new Paginator($doctrinePaginator);
     }
 }

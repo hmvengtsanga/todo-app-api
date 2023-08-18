@@ -97,7 +97,7 @@
         ],
         "code-quality": [
             "vendor/bin/php-cs-fixer fix src",
-            "php bin/phpunit"
+            "php bin/phpunit --testdox"
         ]
     },
     "conflict": {
