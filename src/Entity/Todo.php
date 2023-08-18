@@ -2,7 +2,16 @@
 
 namespace App\Entity;
 
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Metadata\ApiFilter;
 use ApiPlatform\Metadata\ApiResource;
+use ApiPlatform\Metadata\Delete;
+use ApiPlatform\Metadata\Get;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Patch;
+use ApiPlatform\Metadata\Post;
+use ApiPlatform\Metadata\Put;
+use App\Controller\PublicTodosAction;
 use App\Enum\StatusEnum;
 use App\Repository\TodoRepository;
 use Doctrine\DBAL\Types\Types;
@@ -13,9 +22,33 @@ use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TodoRepository::class)]
 #[ApiResource(
-    normalizationContext: ['groups' => ['todo:read']],
-    denormalizationContext: ['groups' => ['todo:write', 'todo:patch']],
+    normalizationContext: ['groups' => ['todo:read']]
 )]
+#[GetCollection(
+    name: 'get_my_todos',
+)]
+#[GetCollection(
+    name: 'get_public_todos',
+    uriTemplate: '/todos/public',
+    controller: PublicTodosAction::class
+)]
+#[Get(security: "is_granted('TODO_READ', object)")]
+#[Put(
+    security: "is_granted('TODO_UPDATE', object)",
+    denormalizationContext: ['groups' => ['todo:write']]
+)
+]
+#[Delete(security: "is_granted('TODO_DELETE', object)")]
+#[Patch(
+    uriTemplate: '/todos/{id}/status',
+    security: "is_granted('TODO_CHANGE_STATUS', object)",
+    denormalizationContext: ['groups' => ['todo:patch']],
+)
+]
+#[Post(
+    denormalizationContext: ['groups' => ['todo:write']],
+)]
+#[ApiFilter(OrderFilter::class, properties: ['id', 'createdAt', 'updatedAt'], arguments: ['orderParameterName' => 'order'])]
 class Todo
 {
     // updates createdAt, updatedAt fields
