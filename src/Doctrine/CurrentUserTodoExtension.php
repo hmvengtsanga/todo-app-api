@@ -38,7 +38,6 @@ final class CurrentUserTodoExtension implements QueryCollectionExtensionInterfac
         Operation $operation = null,
         array $context = []
     ): void {
-        // No nedd extension
     }
 
     private function addWhere(QueryBuilder $queryBuilder, string $resourceClass, array $context = []): void
