@@ -40,7 +40,7 @@ Run task on docker container
   php bin/console messenger:consume async
 ```
 
-Open Browser
+Wait 2 minutes while init.sh starts and opens the Browser
 
 ```bash
   API: http://localhost:8040/api
