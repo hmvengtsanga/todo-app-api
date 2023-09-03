@@ -26,7 +26,7 @@ api_platform:
 
     # The list of enabled patch formats. The first one will be the default.
     patch_formats: 
-        json:     ['application/merge-patch+json']
+        json:     ['application/merge-patch+json', 'application/json']
 
     defaults:
         pagination_client_enabled: true
